@@ -78,6 +78,9 @@ class Sudoku {
     getBoard() {
         return this.board;
     }
+    toString() {
+        return this.board.map(e => e.join('')).join('');
+    }
     getOriginalBoard() {
         return this.originalBoard;
     }
@@ -134,15 +137,15 @@ class Sudoku {
 }
 // The file has newlines at the end of each line,
 // so we call split to remove it (\n)
-var fs = require('fs');
-var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
+let fs = require('fs');
+let board_string = fs.readFileSync('set-01_sample.unsolved.txt')
     .toString()
     .split("\n")[0];
-var game = new Sudoku(board_string);
+let game = new Sudoku(board_string);
 // Remember: this will just fill out what it can and not "guess"
-console.log('Unsolved:');
+console.log('Unsolved : ' + game.toString());
 console.log(game.getBoard());
 game.solve();
-console.log('Solved:');
+console.log('Solved : ' + game.toString());
 console.log(game.getBoard());
 //# sourceMappingURL=sudoku.js.map
