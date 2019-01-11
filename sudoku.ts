@@ -78,24 +78,72 @@ class Sudoku {
     getBoard(): Array<Array<number>> {
         return this.board;
     }
+    getOriginalBoard(): Array<Array<number>> {
+        return this.originalBoard;
+    }
     getRandomInt(): number {
         return Math.floor(Math.random() * 9) + 1;
     }
-    solve(): void {
+    backtrackTry(row: number, col: number) {
+        let num = this.board[row][col] * 1
+        while (num < 9) {
+            num++
+            if (this.insertData(num, row, col)) {
+                return true
+            }
+        }
+        this.board[row][col] = 0
+        return false
+    }
+    getEmpty() {
         for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
                 if (this.board[row][col] === 0) {
-                    for (let num = 0; num < 9; num++) {
-                        if (this.insertData(num, row, col)) {
-                            break
-                        }
-                    }
+                    return { row, col }
                 }
+            }
+        }
+        return { row: -1, col: -1 }
+    }
+    getDifferent() {
+        for (let row = 8; row >= 0; row--) {
+            for (let col = 8; col >= 0; col--) {
+                if (this.board[row][col] !== this.originalBoard[row][col]) {
+                    return { row, col }
+                }
+            }
+        }
+        return { row: -1, col: -1 }
+    }
+    solve(): void {
+        let row = 0
+        let col = 0
+        while (this.getEmpty().row != -1) {
+            if (!this.backtrackTry(row, col)) {
+                let coord = this.getDifferent()
+                row = coord.row
+                col = coord.col
+            } else {
+                let coord = this.getEmpty()
+                row = coord.row
+                col = coord.col
             }
         }
     }
 }
 
-let sudoku = new Sudoku('361025900080960010400000057008000471000603000259000800740000005020018060005470329');
-sudoku.solve()
-console.log(sudoku.getBoard());
+// The file has newlines at the end of each line,
+// so we call split to remove it (\n)
+var fs = require('fs')
+var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
+    .toString()
+    .split("\n")[0]
+
+var game = new Sudoku(board_string)
+
+// Remember: this will just fill out what it can and not "guess"
+console.log('Unsolved:')
+console.log(game.getBoard())
+game.solve()
+console.log('Solved:')
+console.log(game.getBoard())
