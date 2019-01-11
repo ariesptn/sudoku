@@ -1,17 +1,41 @@
 class Sudoku {
-    constructor() {
+    constructor(boardString) {
+        this.originalBoard = [];
         this.board = [];
+        if (!this.parseBoardString(boardString)) {
+            this.generateEmptyBoard();
+        }
+    }
+    generateEmptyBoard() {
+        let result = [];
         for (let row = 0; row < 9; row++) {
-            this.board.push([]);
+            result.push([]);
             for (let col = 0; col < 9; col++) {
-                this.board[row].push(0);
+                result[row].push(0);
             }
         }
-        for (let iRow = 0; iRow < 9; iRow++) {
-            for (let iCol = 0; iCol < 9; iCol++) {
-                this.insertData(this.getRandomInt(), iRow, iCol);
-            }
+        this.originalBoard = result;
+        this.resetBoard();
+    }
+    parseBoardString(input) {
+        if (input.length !== 81) {
+            return false;
         }
+        let board = [];
+        while (input.length > 0) {
+            let col = input.substring(0, 9);
+            input = input.substring(9);
+            if (isNaN(parseInt(col))) {
+                return false;
+            }
+            board.push(col.split('').map(e => parseInt(e)));
+        }
+        this.originalBoard = board;
+        this.resetBoard();
+        return true;
+    }
+    resetBoard() {
+        this.board = this.originalBoard.map(e => e.slice());
     }
     checkHorizontal(num, row) {
         for (let col = 0; col < 9; col++) {
@@ -55,15 +79,15 @@ class Sudoku {
         return this.board;
     }
     getRandomInt() {
-        return Math.floor(Math.random() * Math.floor(10));
+        return Math.floor(Math.random() * 9) + 1;
     }
     solve() {
         for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
                 if (this.board[row][col] === 0) {
-                    for (let test = 1; test <= 9; test++) {
-                        if (this.checkAll(test, row, col)) {
-                            this.insertData(test, row, col);
+                    for (let num = 0; num < 9; num++) {
+                        if (this.insertData(num, row, col)) {
+                            break;
                         }
                     }
                 }
@@ -71,7 +95,7 @@ class Sudoku {
         }
     }
 }
-let sudoku = new Sudoku();
+let sudoku = new Sudoku('361025900080960010400000057008000471000603000259000800740000005020018060005470329');
 sudoku.solve();
 console.log(sudoku.getBoard());
 //# sourceMappingURL=sudoku.js.map
