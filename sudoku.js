@@ -1,7 +1,10 @@
+"use strict";
 class Sudoku {
     constructor(boardString) {
         this.originalBoard = [];
         this.board = [];
+        this.solveStepRow = 0;
+        this.solveStepCol = 0;
         if (!this.parseBoardString(boardString)) {
             this.generateEmptyBoard();
         }
@@ -118,21 +121,26 @@ class Sudoku {
         }
         return { row: -1, col: -1 };
     }
-    solve() {
-        let row = 0;
-        let col = 0;
-        while (this.getEmpty().row != -1) {
-            if (!this.backtrackTry(row, col)) {
+    solveStep() {
+        if (this.getEmpty().row != -1) {
+            if (!this.backtrackTry(this.solveStepRow, this.solveStepCol)) {
                 let coord = this.getDifferent();
-                row = coord.row;
-                col = coord.col;
+                this.solveStepRow = coord.row;
+                this.solveStepCol = coord.col;
             }
             else {
                 let coord = this.getEmpty();
-                row = coord.row;
-                col = coord.col;
+                this.solveStepRow = coord.row;
+                this.solveStepCol = coord.col;
             }
+            return false;
         }
+        else {
+            return true;
+        }
+    }
+    solve() {
+        while (!this.solveStep()) { }
     }
 }
 // The file has newlines at the end of each line,

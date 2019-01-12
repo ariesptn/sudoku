@@ -1,6 +1,8 @@
 class Sudoku {
     originalBoard: Array<Array<number>> = [];
     board: Array<Array<number>> = [];
+    solveStepRow = 0
+    solveStepCol = 0
 
     constructor(boardString: string) {
         if (!this.parseBoardString(boardString)) {
@@ -118,20 +120,24 @@ class Sudoku {
         }
         return { row: -1, col: -1 }
     }
-    solve(): void {
-        let row = 0
-        let col = 0
-        while (this.getEmpty().row != -1) {
-            if (!this.backtrackTry(row, col)) {
+    solveStep() {
+        if (this.getEmpty().row != -1) {
+            if (!this.backtrackTry(this.solveStepRow, this.solveStepCol)) {
                 let coord = this.getDifferent()
-                row = coord.row
-                col = coord.col
+                this.solveStepRow = coord.row
+                this.solveStepCol = coord.col
             } else {
                 let coord = this.getEmpty()
-                row = coord.row
-                col = coord.col
+                this.solveStepRow = coord.row
+                this.solveStepCol = coord.col
             }
+            return false
+        } else {
+            return true
         }
+    }
+    solve() {
+        while (!this.solveStep()) { }
     }
 }
 
