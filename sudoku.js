@@ -19,6 +19,7 @@ class Sudoku {
         }
         this.originalBoard = result;
         this.resetBoard();
+        return this;
     }
     parseBoardString(input) {
         if (input.length !== 81) {
@@ -39,6 +40,7 @@ class Sudoku {
     }
     resetBoard() {
         this.board = this.originalBoard.map(e => e.slice());
+        return this;
     }
     checkHorizontal(num, row) {
         for (let col = 0; col < 9; col++) {
@@ -141,6 +143,7 @@ class Sudoku {
     }
     solve() {
         while (!this.solveStep()) { }
+        return this;
     }
 }
 // The file has newlines at the end of each line,
@@ -148,7 +151,7 @@ class Sudoku {
 let fs = require('fs');
 let board_string = fs.readFileSync('set-01_sample.unsolved.txt')
     .toString()
-    .split("\n")[0];
+    .split("\n")[7];
 let game = new Sudoku(board_string);
 // Remember: this will just fill out what it can and not "guess"
 console.log('Unsolved : ' + game.toString());
