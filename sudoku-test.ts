@@ -1,8 +1,9 @@
-let sudoku = require('./sudoku')
+const sudoku = require('./sudoku')
+const fs = require('fs')
 
 // The file has newlines at the end of each line,
 // so we call split to remove it (\n)
-let fs = require('fs')
+
 let board_string = fs.readFileSync('set-01_sample.unsolved.txt')
     .toString()
     .split("\n")[7]
